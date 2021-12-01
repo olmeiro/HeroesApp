@@ -1,26 +1,32 @@
 import React, { useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import queryString from 'query-string';
-import { HeroCard } from '../heroes/HeroCard';
+
 import { useForm } from '../../hooks/useForm';
-import { useLocation } from 'react-router-dom';
 import { getHeroesByName } from '../../selectors/getHeroesByName';
+import { HeroCard } from '../hero/HeroCard';
 
 export const SearchScreen = ({ history }) => {
 
+    const navigate = useNavigate();
     const location = useLocation();
+
+    /**
+     * Usamos query-string para manipular los parámetros de la url:
+     */
     const { q = '' } = queryString.parse( location.search );
 
     const [ formValues, handleInputChange ] = useForm({
         searchText: q
     });
+
     const { searchText } = formValues;
     
-    const heroesFiltered = useMemo(() => getHeroesByName( q ), [q])
-
+    const heroesFiltered = useMemo(() => getHeroesByName( q ), [q]);
 
     const handleSearch = (e) => {
         e.preventDefault();
-        history.push(`?q=${ searchText }`);
+        navigate(`?q=${ searchText }`)
     }
 
     return (
@@ -29,15 +35,14 @@ export const SearchScreen = ({ history }) => {
             <hr />
             
             <div className="row">
-                
                 <div className="col-5">
-                    <h4> Search Form </h4>
+                    <h4>Buscar</h4>
                     <hr />
 
                     <form onSubmit={ handleSearch }>
                         <input 
                             type="text"
-                            placeholder="Find your hero"
+                            placeholder="Buscar un heroe"
                             className="form-control"
                             name="searchText"
                             autoComplete="off"
@@ -47,35 +52,23 @@ export const SearchScreen = ({ history }) => {
 
                         <button
                             type="submit"
-                            className="btn m-1 btn-block btn-outline-primary"
+                            className="btn btn-outline-primary mt-1"
                         >
-                            Search...
+                            Buscar...
                         </button>
                     </form>
-
-
                 </div>
-
 
                 <div className="col-7">
 
-                    <h4> Results </h4>
+                    <h4> Resultados </h4>
                     <hr />
 
-                    { 
-                        (q ==='') 
-                            && 
-                            <div className="alert alert-info">
-                                Search a hero
-                            </div>
-                    }
-
-                    { 
-                        (q !=='' && heroesFiltered.length === 0 ) 
-                            && 
-                            <div className="alert alert-danger">
-                                There is no a hero with { q }
-                            </div>
+                    {
+                        (q === '')
+                            ? <div className="alert alert-info"> Buscar un héroe </div>
+                            : ( heroesFiltered.length === 0 ) 
+                                && <div className="alert alert-danger"> No hay resultados: { q } </div>
                     }
 
                     {
@@ -86,12 +79,8 @@ export const SearchScreen = ({ history }) => {
                             />
                         ))
                     }
-
                 </div>
-
             </div>
-
-
         </div>
     )
 }

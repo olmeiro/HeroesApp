@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route
-  } from 'react-router-dom';
-
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 import { LoginScreen } from '../components/login/LoginScreen';
 import { DashboardRoutes } from './DashboardRoutes';
@@ -12,14 +7,14 @@ import { DashboardRoutes } from './DashboardRoutes';
 
 export const AppRouter = () => {
     return (
-        <Router>
-            <div>
-                <Switch> 
-                    <Route exact path="/login" component={ LoginScreen } />
-                    
-                    <Route path="/" component={ DashboardRoutes } />
-                </Switch>
-            </div>
-        </Router>
+      <BrowserRouter>
+        <Routes>
+
+          <Route path="/login" element={<LoginScreen />} />
+
+          <Route path="/*" element={ <DashboardRoutes/> }/>
+
+        </Routes>
+      </BrowserRouter>
     )
 }
